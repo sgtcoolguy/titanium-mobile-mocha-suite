@@ -116,6 +116,13 @@ describe.ios('Titanium.App.iOS', function () {
 
 	it('#createUserDefaults(args)', function (finish) {
 		var userDefaults;
+
+		function finishTest() {
+			userDefaults.removeEventListener('change', finishTest);
+			userDefaults.removeAllProperties();
+			finish();
+		}
+
 		this.timeout(5000);
 
 		should(Ti.App.iOS.createUserDefaults).be.a.Function;
@@ -124,13 +131,10 @@ describe.ios('Titanium.App.iOS', function () {
 			suiteName: 'group.mySuite'
 		});
 
-		userDefaults.addEventListener('change', function () {
-			finish();
-		});
+		userDefaults.addEventListener('change', finishTest);
 
 		should(userDefaults).be.an.Object;
 		should(userDefaults.apiName).eql('Ti.App.iOS.UserDefaults');
-		// should(userDefaults.suiteName).eql('group.mySuite'); // This is a creation only value and cannot be access/read later!
 		should(userDefaults.getInt).be.a.Function;
 		should(userDefaults.setInt).be.a.Function;
 		should(userDefaults.getBool).be.a.Function;
