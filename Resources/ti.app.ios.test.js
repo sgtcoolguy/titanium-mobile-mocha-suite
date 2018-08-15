@@ -118,8 +118,13 @@ describe.ios('Titanium.App.iOS', function () {
 		var userDefaults;
 
 		function finishTest() {
+			// This little hack is required to migrate from old tests where we
+			// did not flush all existing properties
+			if (!userDefaults || userDefaults.getString('test', null) !== 'tirocks') {
+				return;
+			}
+
 			userDefaults.removeEventListener('change', finishTest);
-			userDefaults.removeAllProperties();
 			finish();
 		}
 
@@ -130,6 +135,9 @@ describe.ios('Titanium.App.iOS', function () {
 		userDefaults = Ti.App.iOS.createUserDefaults({
 			suiteName: 'group.mySuite'
 		});
+
+		// Flush all old values for fresh results
+		userDefaults.removeAllProperties();
 
 		userDefaults.addEventListener('change', finishTest);
 
