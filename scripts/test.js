@@ -114,8 +114,10 @@ function addTiAppProperties(next) {
 	fs.readFileSync(tiapp_xml).toString().split(/\r?\n/).forEach(function (line) {
 		content.push(line);
 		if (line.indexOf('<ios>') >= 0) {
-			// Forse using the JScore on the emulator, not TiCore!
+			// Force using the JScore on the emulator, not TiCore!
 			content.push('\t\t<use-jscore-framework>true</use-jscore-framework>');
+			// force minimum ios sdk version of 12.0
+			content.push('\t\t<min-ios-ver>12.0</min-ios-ver>');
 		// app thinning breaks tests which expect image files to exist on filesystem normally!
 		} else if (line.indexOf('<use-app-thinning>') >= 0) {
 			content.pop();
