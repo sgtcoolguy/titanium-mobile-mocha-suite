@@ -294,7 +294,7 @@ describe('Titanium.Network.HTTPClient', function () {
 	});
 
 	// Confirms that only the selected cookie is deleted
-	it('clearCookieUnaffectedCheck', function (finish) {
+	it.skip('clearCookieUnaffectedCheck', function (finish) {
 		var xhr = Ti.Network.createHTTPClient(),
 			cookie_string;
 		function second_cookie_fn() {
@@ -560,7 +560,7 @@ describe('Titanium.Network.HTTPClient', function () {
 		xhr.open('GET', 'http://httpbin.org/basic-auth/user/passwd');
 		xhr.send();
 	});
-	
+
 	it.android('save response data to temp directory', function (finish) {
 		var xhr = Ti.Network.createHTTPClient(),
 			attempts = 3;
