@@ -294,7 +294,7 @@ describe('Titanium.Network.HTTPClient', function () {
 	});
 
 	// Confirms that only the selected cookie is deleted
-	it('clearCookieUnaffectedCheck', function (finish) {
+	it.skip('clearCookieUnaffectedCheck', function (finish) {
 		var xhr = Ti.Network.createHTTPClient(),
 			cookie_string;
 		function second_cookie_fn() {
