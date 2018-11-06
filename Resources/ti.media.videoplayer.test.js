@@ -117,7 +117,8 @@ describe('Titanium.Media.VideoPlayer', function () {
 		should(player).have.readOnlyProperty('playbackState').which.is.a.Number;
 	});
 
-	it.ios('Close window containing a video player (TIMOB-25574)', function (finish) {
+	// FIXME: Skipping until TIMOB-26299 is fixed
+	it.allBroken('Close window containing a video player (TIMOB-25574)', function (finish) {
 		var win,
 			nav;
 		this.timeout(15000);
@@ -171,7 +172,8 @@ describe('Titanium.Media.VideoPlayer', function () {
 		}
 	});
 
-	it.ios('Release video player and close window (TIMOB-26033)', function (finish) {
+	// FIXME: Skipping until TIMOB-26299 is fixed
+	it.allBroken('Release video player and close window (TIMOB-26033)', function (finish) {
 		var win = Ti.UI.createWindow();
 		var videoWindow = Ti.UI.createWindow();
 		var videoPlayer = Ti.Media.createVideoPlayer({
