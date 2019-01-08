@@ -10,7 +10,7 @@
 'use strict';
 var should = require('./utilities/assertions');
 
-describe('Titanium.UI.TabbedBar', function () {
+describe.windowsMissing('Titanium.UI.TabbedBar', function () {
 	var win;
 
 	beforeEach(function () {
