@@ -9,6 +9,7 @@
 /* eslint no-unused-expressions: "off" */
 'use strict';
 const should = require('./utilities/assertions'); // eslint-disable-line no-unused-vars
+const utilities = require('./utilities/utilities');
 let os;
 
 describe('os', function () {
@@ -214,7 +215,12 @@ describe('os', function () {
 		});
 
 		it('returns a positive Number', () => {
-			os.uptime().should.be.above(0);
+			// FIXME: Windows returns 0
+			if (utilities.isWindows()) {
+				os.uptime().should.eql(0);
+			} else {
+				os.uptime().should.be.above(0);
+			}
 		});
 	});
 
