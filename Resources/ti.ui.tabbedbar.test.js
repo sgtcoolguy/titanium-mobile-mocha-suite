@@ -60,7 +60,7 @@ describe.windowsMissing('Titanium.UI.TabbedBar', function () {
 		tabbedBar.addEventListener('postlayout', () => {
 			try {
 				tabbedBar.labels = [ 'D', 'E', 'F' ];
-				should(tabbedBar.labels.get(1)).be.eql('E');
+				should(tabbedBar.labels[1]).be.eql('E');
 				finish();
 			} catch (err) {
 				finish(err);
