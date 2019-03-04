@@ -7,6 +7,7 @@
         "baz": "file:fake_node_modules/baz",
         "browserify-zlib": "^0.2.0",
         "foo": "file:fake_node_modules/foo",
+        "mocha": "^8.0.1",
         "pixelmatch": "^5.2.0",
         "should": "^13.2.3"
     }

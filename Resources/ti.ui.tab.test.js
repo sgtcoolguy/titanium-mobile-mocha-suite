@@ -8,7 +8,6 @@
 /* eslint no-unused-expressions: "off" */
 'use strict';
 
-require('ti-mocha');
 var should = require('./utilities/assertions');
 
 describe('Titanium.UI.Tab', function () {

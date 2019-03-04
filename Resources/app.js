@@ -7,47 +7,39 @@
 /* eslint-env titanium, mocha */
 /* eslint no-unused-expressions: "off", no-global-assign: "off", no-native-reassign: "off" */
 'use strict';
-var utilities,
-	win,
-	$results = [],
-	failed = false,
-	should;
-
-require('./ti-mocha');
-// I *think* we need to load mocha first before utilities...
-utilities = require('./utilities/utilities');
-should = require('./utilities/assertions');
-
-const isWindows = utilities.isWindows();
-const isAndroid = !isWindows && utilities.isAndroid();
-
-// Must test global is available in first app.js explicitly!
-// (since app.js is treated slightly differently than required files on at least Android)
-describe('global', function () {
-	it('should be available as \'global\'', function () {
-		should(global).be.ok;
-	});
-});
-
-// Must have __dirname in the global scope, even in our app.js
-describe('__dirname', function () {
-	it.windowsMissing('should be available as \'__dirname\'', function () {
-		should(__dirname).be.ok;
-		should(__dirname).be.a.String();
-		should(__dirname).be.eql('/');
-	});
-});
-
-// Must have __filename in the global scope, even in our app.js
-describe('__filename', function () {
-	it.windowsMissing('should be available as \'__filename\'', function () {
-		should(__filename).be.ok;
-		should(__filename).be.a.String();
-		should(__filename).be.eql('/app.js');
-	});
-});
+const utilities = require('./utilities/utilities');
+const isAndroid = utilities.isAndroid();
+const isWindows = !isAndroid && utilities.isWindows();
 
 function loadTests() {
+	const should = require('./utilities/assertions');
+
+	// Must test global is available in first app.js explicitly!
+	// (since app.js is treated slightly differently than required files on at least Android)
+	describe('global', function () {
+		it('should be available as \'global\'', function () {
+			should(global).be.ok();
+		});
+	});
+
+	// Must have __dirname in the global scope, even in our app.js
+	describe('__dirname', function () {
+		it.windowsMissing('should be available as \'__dirname\'', function () {
+			should(__dirname).be.ok();
+			should(__dirname).be.a.String();
+			should(__dirname).eql('/');
+		});
+	});
+
+	// Must have __filename in the global scope, even in our app.js
+	describe('__filename', function () {
+		it.windowsMissing('should be available as \'__filename\'', function () {
+			should(__filename).be.ok();
+			should(__filename).be.a.String();
+			should(__filename).eql('/app.js');
+		});
+	});
+
 	// ============================================================================
 	// Add the tests here using "require"
 	// Global behavior (top-level timers, functions, types)
@@ -209,7 +201,7 @@ function loadAddonTestFiles(name) {
 
 /**
  * To make Jenkins junit reporting happy, let's use anything up until '#'/'.' in
- * suite names as the full "class name". Then concanetate the remainder with the test name.
+ * suite names as the full "class name". Then concatenate the remainder with the test name.
  * This should consolidate tests together under our API names like 'Ti.Buffer', with subsuites' tests
  * just represented as separate tests (the sub-suite name gets prefixed to the test name)
  * @param  {string[]} suites  stack of suite names
@@ -217,18 +209,17 @@ function loadAddonTestFiles(name) {
  * @return {object}
  */
 function suiteAndTitle(suites, testTitle) {
-	var i;
-	var char;
-	var index = -1;
-	var suiteName = '';
-	var newTestTitle = '';
-	for (i = 0; i < suites.length; i++) {
-		char = suites[i].charAt(0);
+	let index = -1;
+	for (let i = 0; i < suites.length; i++) {
+		const char = suites[i].charAt(0);
 		if (char === '.' || char === '#') {
 			index = i;
 			break;
 		}
 	}
+
+	let suiteName = '';
+	let newTestTitle = '';
 	if (index !== -1) {
 		suiteName = suites.slice(0, index).join('.');
 		newTestTitle = suites.slice(index).join(' ') + ' ' + testTitle;
@@ -272,40 +263,11 @@ function escapeCharacters(string) {
 // add a special mocha reporter that will time each test run using
 // our microsecond timer
 function $Reporter(runner) {
-	var started,
-		suites = [];
+	let started;
+	const suites = [];
 
-	runner.on('suite', function (suite) {
-		if (suite.title) {
-			suites.push(suite.title);
-		}
-	});
-
-	runner.on('suite end', function (suite) {
-		if (suite.title) {
-			suites.pop();
-		}
-	});
-
-	runner.on('test', function (test) {
-		Ti.API.info('!TEST_START: ' + test.title);
-		started = new Date().getTime();
-	});
-
-	runner.on('pending', function () {
-		// TODO Spit out something like !TEST_SKIP:  ?
-		started = new Date().getTime(); // reset timer. pending/skipped tests basically start and end immediately
-	});
-
-	// 'pending' hook for skipped tests? Does 'pending', then immediate 'test end'. No 'test' event
-
-	runner.on('fail', function (test, err) {
-		test.err = err;
-		failed = true;
-	});
-
-	runner.on('test end', function (test) {
-		const tdiff = new Date().getTime() - started;
+	function writeTestResult(test) {
+		const tdiff = Date.now() - started;
 		const fixedNames = suiteAndTitle(suites, test.title);
 		const result = {
 			state: test.state || 'skipped',
@@ -319,6 +281,7 @@ function $Reporter(runner) {
 		if (test.err) {
 			let message = test.err.message || 'Error';
 			let stack = test.err.stack || '';
+			// TODO: Prepend nativeStack to stack if we have one?
 			// uncaught
 			if (test.err.uncaught) {
 				message = 'Uncaught ' + message;
@@ -363,7 +326,47 @@ function $Reporter(runner) {
 		} else {
 			Ti.API.info('!TEST_END: ' + stringified);
 		}
-		$results.push(result);
+	}
+
+	runner.on('suite', function (suite) {
+		if (suite.title) {
+			suites.push(suite.title);
+		}
+	});
+
+	runner.on('suite end', function (suite) {
+		if (suite.title) {
+			suites.pop();
+		}
+	});
+
+	runner.on('test', test => {
+		Ti.API.info('!TEST_START: ' + test.title);
+		started = Date.now();
+	});
+
+	// for normal passing tests we get 'pass', then 'test end'
+	// for normal failures we get 'fail', 'test end'
+	// for normal skip/pending we get 'pending', 'test end'
+	// for failures in after hook we just get 'fail'
+	// so we *cannot* rely on 'test end'
+	// do more like JSONStream and rely on:
+	// - 'start', 'end' (for whole suite)
+	// - 'pass'/'fail' for reporting test result
+
+	runner.on('pending', test => {
+		writeTestResult(test);
+		started = Date.now(); // reset timer. pending/skipped tests basically start and end immediately
+	});
+
+	// FIXME: if we call the done() callback multiple times, we get a 'pass' followed by a 'fail'
+	// how can we avoid this? buffer writing the test end stuff until next 'suite end'/'test'? Does our test script handle it ok?
+	// it seems to gather both...
+	runner.on('pass', test => writeTestResult(test));
+
+	runner.on('fail', function (test, err) {
+		test.err = err;
+		writeTestResult(test);
 	});
 }
 
@@ -377,21 +380,23 @@ if (isWindows) {
 Ti.API.info('OS_VERSION: ' + Ti.Platform.version);
 
 // Display a window to host the test and show the final result.
-win = Ti.UI.createWindow({
+const win = Ti.UI.createWindow({
 	backgroundColor: 'yellow',
 	keepScreenOn: true
 });
 win.addEventListener('open', function () {
 	setTimeout(function () {
-		mocha.setup({
-			reporter: $Reporter,
-			quiet: true
+		const Mocha = require('mocha');
+		const mocha = new Mocha({
+			ui: 'bdd',
+			reporter: $Reporter
 		});
+		mocha.suite.emit('pre-require', global, 'app.js', mocha);
 		loadTests();
 		// Start executing the test suite.
-		mocha.run(function () {
+		mocha.run(function (failures) {
 			// We've finished executing all tests.
-			win.backgroundColor = failed ? 'red' : 'green';
+			win.backgroundColor = failures !== 0 ? 'red' : 'green';
 			Ti.API.info('!TEST_RESULTS_STOP!');
 			if (isWindows) {
 				if (Ti.App.Windows.closeExtendedExecution) {

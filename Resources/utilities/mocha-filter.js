@@ -41,7 +41,7 @@ module.exports.setupMocha = function (_checks, skipOriginals) {
 		}
 	}
 
-	var functions = [ describe, it, before, after, beforeEach, afterEach ];
+	var functions = [ global.describe, global.it, global.before, global.after, global.beforeEach, global.afterEach ];
 
 	/**
 	 * Process the checks
