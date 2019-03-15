@@ -282,7 +282,7 @@ describe('require()', function () {
 		should(amber.sdk).be.eql('7.4.0.v20180627024922');
 	});
 
-	it.windowsBroken('should handle directory with package.json main pointing at directory with index.js', function () {
+	it('should handle directory with package.json main pointing at directory with index.js', function () {
 		const result = require('./package_with_main_dir');
 		should(result).have.property('success');
 		should(result.success).eql(true);
