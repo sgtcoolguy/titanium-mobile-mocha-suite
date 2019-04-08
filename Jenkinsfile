@@ -19,21 +19,23 @@ def unitTests(os, scm, nodeVersion, npmVersion, testSuiteBranch, target = '') {
 
 		nodejs(nodeJSInstallationName: "node ${nodeVersion}") {
 			ensureNPM(npmVersion)
-			isUnix() ? sh('npm ci') : bat('npm ci')
+			command('npm ci')
 			dir('scripts') {
 				try {
-					timeout(20) {
-						if (isUnix()) {
+					if ('ws-local'.equals(target)) {
+						timeout(30) {
+							bat "node test.js -p ${os} -b ${testSuiteBranch} -T ${target}"
+						}
+					} else if ('wp-emulator'.equals(target)) {
+						timeout(30) {
+							bat "node test.js -p ${os} -b ${testSuiteBranch} -T ${target} -C 10-0-1"
+						}
+					} else {
+						timeout(20) {
 							// We know we wont need to use the target here for iOS/Android
 							sh "node test.js -p ${os} -b ${testSuiteBranch}"
-						} else {
-							if ('ws-local'.equals(target)) {
-								bat "node test.js -p ${os} -b ${testSuiteBranch} -T ${target}"
-							} else if ('wp-emulator'.equals(target)) {
-								bat "node test.js -p ${os} -b ${testSuiteBranch} -T ${target} -C 10-0-1"
-							}
-						}
-					} // timeout
+						} // timeout
+					}
 				} catch (e) {
 					// Move crash collection to pipeline library?
 					if ('ios'.equals(os)) {
@@ -78,7 +80,7 @@ def unitTests(os, scm, nodeVersion, npmVersion, testSuiteBranch, target = '') {
 						sh 'adb uninstall com.appcelerator.testApp.testing'
 						killAndroidEmulators()
 					} else if ('ws-local'.equals(target)) {
-							bat 'taskkill /IM mocha.exe /F 2> nul'
+						bat 'taskkill /IM mocha.exe /F 2> nul'
 					} else if ('wp-emulator'.equals(target)) {
 						bat 'taskkill /IM xde.exe /F 2> nul'
 					}
