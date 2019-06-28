@@ -622,4 +622,33 @@ describe('Titanium.Network.HTTPClient', function () {
 		xhr.setRequestHeader('Content-Type', 'application/json; charset=utf8');
 		xhr.send(JSON.stringify({ count: count }));
 	});
+
+	it.windowsMissing('.file set to a Ti.Filesystem.File object', function (finish) {
+		this.timeout(6e4);
+
+		const downloadedImageFile = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory, 'DownloadedImage.png');
+		if (downloadedImageFile.exists()) {
+			downloadedImageFile.deleteFile();
+		}
+
+		const xhr = Ti.Network.createHTTPClient({});
+		xhr.setTimeout(6e4);
+		xhr.onload = function (e) {
+			try {
+				// verify that the destination file now exists
+				// TODO: Verify some known contents match?
+				should(xhr.file.exists()).be.true;
+
+				finish();
+			} catch (err) {
+				finish(err);
+			}
+		};
+		xhr.onerror = e => finish(e);
+
+		xhr.open('GET', 'https://avatars1.githubusercontent.com/u/82188?s=200&v=4');
+		xhr.setRequestHeader('Accept-Encoding', 'identity');
+		xhr.file = downloadedImageFile;
+		xhr.send();
+	});
 });

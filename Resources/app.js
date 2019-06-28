@@ -141,6 +141,7 @@ function loadTests() {
 	require('./ti.ui.scrollableview.test');
 	require('./ti.ui.scrollview.test');
 	require('./ti.ui.searchbar.test');
+	require('./ti.ui.shortcutitem.test');
 	require('./ti.ui.slider.test');
 	require('./ti.ui.switch.test');
 	require('./ti.ui.tab.test');

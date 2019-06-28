@@ -571,4 +571,20 @@ describe('Titanium.UI.WebView', function () {
 		win.add(webView);
 		win.open();
 	});
+
+	// Verifies local HTML file can access local JS file and invoke an HTML "onload" callback.
+	it.windowsMissing('html-script-tag', function (finish) {
+		this.slow(3000);
+		this.timeout(5000);
+
+		Ti.App.addEventListener('ti.ui.webview.script.tag:onPageLoaded', function () {
+			finish();
+		});
+
+		win = Ti.UI.createWindow();
+		win.add(Ti.UI.createWebView({
+			url: 'ti.ui.webview.script.tag.html'
+		}));
+		win.open();
+	});
 });
