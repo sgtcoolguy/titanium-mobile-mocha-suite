@@ -223,7 +223,7 @@ function suiteAndTitle(suites, testTitle) {
 function safeStringify(object) {
 	// Hack around cycles in structure!
 	const seen = [];
-	let stringified = JSON.stringify(object, (key, val) => {
+	return JSON.stringify(object, (key, val) => {
 		if (val != null && typeof val === 'object') { // eslint-disable-line no-eq-null,eqeqeq
 			if (seen.indexOf(val) >= 0) {
 				return;
@@ -232,17 +232,19 @@ function safeStringify(object) {
 		}
 		return val;
 	});
-	stringified = stringified.replace(/\\n/g, '\\n')
+}
+
+function escapeCharacters(string) {
+	return string.replace(/\\n/g, '\\n')
 		.replace(/\\'/g, '\\\'')
 		.replace(/\\"/g, '\\"')
 		.replace(/\\&/g, '\\&')
 		.replace(/\\r/g, '\\r')
 		.replace(/\\t/g, '\\t')
 		.replace(/\\b/g, '\\b')
-		.replace(/\\f/g, '\\f');
-	// remove non-printable and other non-valid JSON chars
-	stringified = stringified.replace(/[\u0000-\u0019]+/g, ''); // eslint-disable-line no-control-regex
-	return stringified;
+		.replace(/\\f/g, '\\f')
+		// remove non-printable and other non-valid JSON chars
+		.replace(/[\u0000-\u0019]+/g, ''); // eslint-disable-line no-control-regex
 }
 
 // add a special mocha reporter that will time each test run using
@@ -315,7 +317,7 @@ function $Reporter(runner) {
 		}
 
 		// Hack around cycles in structure!
-		const stringified = safeStringify(result);
+		const stringified = escapeCharacters(safeStringify(result));
 		Ti.API.info('!TEST_END: ' + stringified);
 		$results.push(result);
 	});
