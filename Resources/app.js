@@ -220,6 +220,31 @@ function suiteAndTitle(suites, testTitle) {
 	};
 }
 
+function safeStringify(object) {
+	// Hack around cycles in structure!
+	const seen = [];
+	let stringified = JSON.stringify(object, (key, val) => {
+		if (val != null && typeof val === 'object') { // eslint-disable-line no-eq-null,eqeqeq
+			if (seen.indexOf(val) >= 0) {
+				return;
+			}
+			seen.push(val);
+		}
+		return val;
+	});
+	stringified = stringified.replace(/\\n/g, '\\n')
+		.replace(/\\'/g, '\\\'')
+		.replace(/\\"/g, '\\"')
+		.replace(/\\&/g, '\\&')
+		.replace(/\\r/g, '\\r')
+		.replace(/\\t/g, '\\t')
+		.replace(/\\b/g, '\\b')
+		.replace(/\\f/g, '\\f');
+	// remove non-printable and other non-valid JSON chars
+	stringified = stringified.replace(/[\u0000-\u0019]+/g, ''); // eslint-disable-line no-control-regex
+	return stringified;
+}
+
 // add a special mocha reporter that will time each test run using
 // our microsecond timer
 function $Reporter(runner) {
@@ -253,6 +278,9 @@ function $Reporter(runner) {
 	runner.on('fail', function (test, err) {
 		test.err = err;
 		failed = true;
+
+		const fixedNames = suiteAndTitle(suites, test.title);
+		Ti.API.error(`!TEST_FAIL: ${fixedNames.suite} - ${fixedNames.title} -> ${safeStringify(err)}`);
 	});
 
 	runner.on('test end', function (test) {
@@ -287,26 +315,7 @@ function $Reporter(runner) {
 		}
 
 		// Hack around cycles in structure!
-		const seen = [];
-		let stringified = JSON.stringify(result, (key, val) => {
-			if (val != null && typeof val === 'object') { // eslint-disable-line no-eq-null,eqeqeq
-				if (seen.indexOf(val) >= 0) {
-					return;
-				}
-				seen.push(val);
-			}
-			return val;
-		});
-		stringified = stringified.replace(/\\n/g, '\\n')
-			.replace(/\\'/g, '\\\'')
-			.replace(/\\"/g, '\\"')
-			.replace(/\\&/g, '\\&')
-			.replace(/\\r/g, '\\r')
-			.replace(/\\t/g, '\\t')
-			.replace(/\\b/g, '\\b')
-			.replace(/\\f/g, '\\f');
-		// remove non-printable and other non-valid JSON chars
-		stringified = stringified.replace(/[\u0000-\u0019]+/g, ''); // eslint-disable-line no-control-regex
+		const stringified = safeStringify(result);
 		Ti.API.info('!TEST_END: ' + stringified);
 		$results.push(result);
 	});
