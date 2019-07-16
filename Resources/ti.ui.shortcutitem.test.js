@@ -34,6 +34,12 @@ describe('Titanium.UI.ShortcutItem', () => {
 		should(shortcut).have.readOnlyProperty('apiName').which.is.a.String;
 		should(shortcut.apiName).be.eql('Ti.UI.ShortcutItem');
 
+		// ONLY compatible with Android 7.1+, end test early
+		const version = Ti.Platform.version.split('.');
+		if (parseInt(`${version[0]}${version[1]}`) < 71) {
+			return;
+		}
+
 		// verify `id`
 		should(shortcut.id).be.eql('test_shortcut');
 
