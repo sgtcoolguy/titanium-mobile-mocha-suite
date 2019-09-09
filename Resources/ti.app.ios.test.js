@@ -257,15 +257,12 @@ describe.ios('Titanium.App.iOS', function () {
 		should(Ti.App.iOS.UTTYPE_XML).be.a.String;
 	});
 
-	it.ios('.userInterfaceStyle', function () {
+	it.ios('.userInterfaceStyle', () => {
 		const isiOS13 = parseInt(Ti.Platform.version.split('.')[0]) >= 13;
-		if (!isiOS13) {
-			this.skip();
-			return;
+		if (isiOS13) {
+			// We only check for the type, since the value (light, dark, unspecified)
+			// can vary between device configs
+			should(Ti.App.iOS.userInterfaceStyle).be.a.Number;
 		}
-
-		// We only check for the type, since the value (light, dark, unspecified)
-		// can vary between device configs
-		should(Ti.App.iOS.userInterfaceStyle).be.a.Number;
 	});
 });
