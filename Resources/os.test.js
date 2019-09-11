@@ -120,7 +120,8 @@ describe('os', function () {
 		});
 
 		it('returns Ti.Platform.address value', () => {
-			os.hostname().should.eql(Ti.Platform.address);
+			// mey be undefined on iOS now!
+			should(os.hostname()).eql(Ti.Platform.address);
 		});
 	});
 
