@@ -339,6 +339,10 @@ function handleBuild(prc, next) {
 		// we saw test end before, but failed to parse as JSON because we got partial output, so continue
 		// trying until it's happy (and resets sawTestEnd to false)
 		if (sawTestEnd) {
+			// strip off leading log level prefix!
+			if (token.startsWith('[INFO]')) {
+				token = token.substring(8);
+			}
 			tryParsingTestResult(partialTestEnd + token);
 			return;
 		}

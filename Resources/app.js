@@ -18,6 +18,9 @@ require('./ti-mocha');
 utilities = require('./utilities/utilities');
 should = require('./utilities/assertions');
 
+const isWindows = utilities.isWindows();
+const isAndroid = !isWindows && utilities.isAndroid();
+
 // Must test global is available in first app.js explicitly!
 // (since app.js is treated slightly differently than required files on at least Android)
 describe('global', function () {
@@ -318,13 +321,32 @@ function $Reporter(runner) {
 		}
 
 		// Hack around cycles in structure!
-		const stringified = escapeCharacters(safeStringify(result));
-		Ti.API.info('!TEST_END: ' + stringified);
+		let stringified = escapeCharacters(safeStringify(result));
+		// FIXME: On Android we have a max log size of 4076 bytes (some of which is taken up by our tag/etc)
+		// if the stringified output is too long, we should "split" it by looking for the last '","' before the limit
+		// and print that chunk etc.
+		// In practice it seems to get cut off at 4067 characters,
+		// and we take up the first 19 with the log level and !TEST_END stuff - leaving us with up to 4048 characters
+		if (isAndroid && stringified.length > 4000) {
+			let prefix = '!TEST_END: ';
+			while (stringified.length > 4000) {
+				const splitIndex = stringified.lastIndexOf('","', 4000);
+				Ti.API.info(prefix + stringified.substring(0, splitIndex + 2)); // keep end quote and comma
+				stringified = stringified.substring(splitIndex + 2);
+				prefix = ''; // after first output don't prefix with !TEST_END: anymore
+			}
+			// print out last chunk
+			if (stringified.length !== 0) {
+				Ti.API.info(stringified);
+			}
+		} else {
+			Ti.API.info('!TEST_END: ' + stringified);
+		}
 		$results.push(result);
 	});
 }
 
-if (utilities.isWindows()) {
+if (isWindows) {
 	if (Ti.App.Windows.requestExtendedExecution) {
 		Ti.App.Windows.requestExtendedExecution();
 	}
@@ -350,7 +372,7 @@ win.addEventListener('open', function () {
 			// We've finished executing all tests.
 			win.backgroundColor = failed ? 'red' : 'green';
 			Ti.API.info('!TEST_RESULTS_STOP!');
-			if (utilities.isWindows()) {
+			if (isWindows) {
 				if (Ti.App.Windows.closeExtendedExecution) {
 					Ti.App.Windows.closeExtendedExecution();
 				}
