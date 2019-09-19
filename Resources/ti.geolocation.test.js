@@ -256,8 +256,8 @@ describe.windowsBroken('Titanium.Geolocation', function () {
 				should(data.success).be.eql(true);
 				should(data).have.property('code').which.is.a.Number;
 				should(data.code).be.eql(0);
-				should(data.latitude).be.approximately(37.387, 0.002); // iOS gives: 37.38605, Windows does 37.3883645
-				should(data.longitude).be.approximately(-122.065, 0.02); // WIndows gives: -122.0512682, iOS gives -122.08385
+				should(data.latitude).be.approximately(37.387, 0.004); // iOS: 37.38605, Windows: 37.3883645, Android: 37.3909049
+				should(data.longitude).be.approximately(-122.065, 0.02); // Windows: -122.0512682, iOS: -122.08385, Android: -122.0472468
 				finish();
 			} catch (err) {
 				finish(err);
