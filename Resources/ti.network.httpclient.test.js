@@ -410,7 +410,7 @@ describe('Titanium.Network.HTTPClient', function () {
 			}
 		};
 
-		xhr.open('GET', 'http://www.appcelerator.com/assets/The_iPad_App_Wave.pdf');
+		xhr.open('GET', 'http://www.pdf995.com/samples/pdf.pdf');
 		xhr.send();
 	});
 
