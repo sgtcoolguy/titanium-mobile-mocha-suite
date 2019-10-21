@@ -331,8 +331,14 @@ function $Reporter(runner) {
 			let prefix = '!TEST_END: ';
 			while (stringified.length > 4000) {
 				const splitIndex = stringified.lastIndexOf('","', 4000);
-				Ti.API.info(prefix + stringified.substring(0, splitIndex + 2)); // keep end quote and comma
-				stringified = stringified.substring(splitIndex + 2);
+				if (splitIndex !== -1) {
+					Ti.API.info(prefix + stringified.substring(0, splitIndex + 2)); // keep end quote and comma
+					stringified = stringified.substring(splitIndex + 2);
+				} else {
+					// No obvious split point, just spit out 3900 characters and try loop again
+					Ti.API.info(prefix + stringified.substring(0, 3900));
+					stringified = stringified.substring(3900);
+				}
 				prefix = ''; // after first output don't prefix with !TEST_END: anymore
 			}
 			// print out last chunk
