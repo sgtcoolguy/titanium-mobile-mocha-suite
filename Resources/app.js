@@ -138,6 +138,7 @@ function loadTests() {
 	require('./ti.ui.ios.statusbar.test');
 	require('./ti.ui.ios.tableviewstyle.test');
 	require('./ti.ui.ios.webviewconfiguration.test');
+	require('./ti.ui.ipad.popover.test');
 	require('./ti.ui.label.test');
 	require('./ti.ui.layout.test');
 	require('./ti.ui.listview.test');
