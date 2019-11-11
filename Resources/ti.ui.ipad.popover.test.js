@@ -71,6 +71,8 @@ describe.ipad('Titanium.UI.iPad.Popover', function () {
 				finish();
 			} catch (e) {
 				finish(e);
+			} finally {
+				popover.hide();
 			}
 		}, 200);
 	});
