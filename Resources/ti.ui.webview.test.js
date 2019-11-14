@@ -321,7 +321,7 @@ describe('Titanium.UI.WebView', function () {
 		});
 	});
 
-	it('userAgent', function (finish) {
+	it.windowsBroken('userAgent', function (finish) {
 		var webView = Ti.UI.createWebView({
 				userAgent: 'TEST AGENT'
 			}),
