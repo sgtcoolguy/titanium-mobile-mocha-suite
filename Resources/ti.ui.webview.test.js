@@ -321,19 +321,17 @@ describe('Titanium.UI.WebView', function () {
 		});
 	});
 
-	// FIXME: On Windows, this times-out. Probably need a longer timeout here?
-	// FIXME: On Android, 'e.source.html' sometimes returns null. May need to retry.
-	it.androidAndWindowsBroken('userAgent', function (finish) {
+	it('userAgent', function (finish) {
 		var webView = Ti.UI.createWebView({
 				userAgent: 'TEST AGENT'
 			}),
-			url = 'http://www.whatsmyua.info',
+			url = 'https://www.whoishostingthis.com/tools/user-agent/',
 			retry = 3;
 
 		win = Ti.UI.createWindow({ backgroundColor: 'gray' });
 
 		webView.addEventListener('load', function (e) {
-			var exp = /"input">(.*)<\/textarea/g.exec(e.source.html),
+			var exp = /"info-box user-agent">(.*)<\/div>/g.exec(e.source.html),
 				userAgent = exp && exp.length > 1 ? exp[1] : undefined;
 			if (userAgent && userAgent === webView.userAgent) {
 				finish();
