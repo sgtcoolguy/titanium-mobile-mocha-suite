@@ -190,6 +190,12 @@ const filters = {
 	ios: function () {
 		return utilities.isIOS();
 	},
+	ipad: function () {
+		return utilities.isIPad();
+	},
+	iphone: function () {
+		return utilities.isIPhone();
+	},
 	windows: function () {
 		return utilities.isWindows();
 	},
