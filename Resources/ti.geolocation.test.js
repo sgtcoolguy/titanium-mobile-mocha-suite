@@ -284,7 +284,7 @@ describe.windowsBroken('Titanium.Geolocation', function () {
 				should(data.places[0].zipcode).be.eql('94043');
 				should(data.places[0]).have.property('latitude').which.is.a.Number;
 				should(data.places[0]).have.property('longitude').which.is.a.Number;
-				should(data.places[0].country).be.eql('USA');
+				should(data.places[0].country).be.oneOf('USA', 'United States of America');
 				should(data.places[0].state).be.eql('California');
 				should(data.places[0].country_code).be.eql('US');
 				should(data.places[0]).have.property('city').which.is.a.String;
