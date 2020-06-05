@@ -118,5 +118,15 @@ describe.windowsBroken('Core', () => {
 				});
 			});
 		});
+
+		describe('Static Method Reference', () => {
+			// Reference static method.
+			const createProxy = Ti.createProxy;
+			should(createProxy).be.a.Function;
+
+			// Attempt to call static method.
+			const result = createProxy({});
+			should(result).be.a.Object;
+		});
 	});
 });
