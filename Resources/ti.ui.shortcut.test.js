@@ -27,7 +27,7 @@ describe('Titanium.UI', () => {
 
 		// Create shortcut instance.
 		const shortcut = Ti.UI.createShortcut();
-		should(shortcut).be.a.Object();
+		should(shortcut).be.an.Object();
 	});
 });
 
@@ -41,6 +41,11 @@ describe('Titanium.UI.Shortcut', () => {
 			description: 'Test shortcut description',
 			data: { test_data: 'data' }
 		});
+	});
+
+	after(() => {
+		const shortcut = Ti.UI.createShortcut();
+		shortcut.removeAll();
 	});
 
 	it('.apiName', () => {
@@ -69,14 +74,15 @@ describe('Titanium.UI.Shortcut', () => {
 			should(shortcut.removeAll).be.a.Function();
 		});
 
-		it('removes single shortcut item', () => {
+		it('removes shortcut items', () => {
 			if (!androidCompatible) {
 				return;
 			}
 			const shortcut = Ti.UI.createShortcut();
-			should(shortcut.items.length).eql(0);
+			should(shortcut.items.length).be.aboveOrEqual(0);
+			const length = shortcut.items.length;
 			shortcut.add(shortcutItem);
-			should(shortcut.items.length).eql(1);
+			should(shortcut.items.length).eql(length + 1);
 
 			shortcut.removeAll();
 			should(shortcut.items.length).eql(0);
@@ -100,12 +106,13 @@ describe('Titanium.UI.Shortcut', () => {
 				return;
 			}
 			const shortcut = Ti.UI.createShortcut();
-			should(shortcut.items.length).eql(0);
+			should(shortcut.items.length).be.aboveOrEqual(0);
+			const length = shortcut.items.length;
 			shortcut.add(shortcutItem);
-			should(shortcut.items.length).eql(1);
+			should(shortcut.items.length).eql(length + 1);
 
 			shortcut.remove(shortcutItem);
-			should(shortcut.items.length).eql(0);
+			should(shortcut.items.length).eql(length);
 		});
 		// TODO: Test removing multiple items
 		// TODO: Test removing item never added in first place
@@ -127,9 +134,10 @@ describe('Titanium.UI.Shortcut', () => {
 				return;
 			}
 			const shortcut = Ti.UI.createShortcut();
-			should(shortcut.items.length).eql(0);
+			should(shortcut.items.length).be.aboveOrEqual(0);
+			const length = shortcut.items.length;
 			shortcut.add(shortcutItem);
-			should(shortcut.items.length).eql(1);
+			should(shortcut.items.length).eql(length + 1);
 		});
 
 		// TODO: Test adding multiple items
