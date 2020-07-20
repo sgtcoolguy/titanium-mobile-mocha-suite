@@ -52,8 +52,14 @@ function loadTests() {
 	// Add the tests here using "require"
 	// Global behavior (top-level timers, functions, types)
 	require('./console.test');
+	require('./date.test');
 	require('./error.test');
 	require('./global.test');
+	require('./intl.test');
+	require('./intl.collator.test');
+	require('./intl.datetimeformat.test');
+	require('./intl.numberformat.test');
+	require('./number.test');
 	require('./require.test');
 	require('./string.test');
 	require('./timers.test');
