@@ -128,7 +128,7 @@ describe('Intl.DateTimeFormat',  () => {
 			formatter = new Intl.DateTimeFormat('de-DE', { weekday: 'long', timeZone: 'UTC' });
 			should(formatter.format(date).toLowerCase()).be.eql('mittwoch');
 			formatter = new Intl.DateTimeFormat('de-DE', { weekday: 'short', timeZone: 'UTC' });
-			should(formatter.format(date).toLowerCase()).be.eql('mi');
+			should(formatter.format(date).toLowerCase()).be.equalOneOf([ 'mi', 'mi.' ]);
 		});
 
 		it.android('fractionalSecondDigits', () => {
