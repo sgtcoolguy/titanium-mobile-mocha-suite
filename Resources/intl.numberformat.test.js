@@ -141,6 +141,10 @@ describe('Intl.NumberFormat', () => {
 	});
 
 	describe('#formatToParts()', () => {
+		if (OS_IOS && (parseInt(Ti.Platform.version.split('.')[0]) < 13)) {
+			return;
+		}
+
 		it('validate function', () => {
 			const formatter = new Intl.NumberFormat();
 			should(formatter.formatToParts).not.be.undefined();
