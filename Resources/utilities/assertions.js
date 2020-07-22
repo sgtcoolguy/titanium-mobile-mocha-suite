@@ -1,5 +1,5 @@
 'use strict';
-/* globals OS_ANDROID,OS_IOS */
+/* globals OS_ANDROID */
 const should = require('should');
 const utilities = require('./utilities');
 
