@@ -9,10 +9,9 @@
 'use strict';
 
 const should = require('./utilities/assertions');
-const utilities = require('./utilities/utilities');
 
 describe('Titanium.UI.ActivityIndicator', function () {
-	it('.apiName', function () {
+	it('.apiName', () => {
 		const activityIndicator = Ti.UI.createActivityIndicator();
 		should(activityIndicator).have.readOnlyProperty('apiName').which.is.a.String();
 		should(activityIndicator.apiName).be.eql('Ti.UI.ActivityIndicator');
