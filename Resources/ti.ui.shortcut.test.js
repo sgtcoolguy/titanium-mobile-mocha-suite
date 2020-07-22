@@ -81,8 +81,14 @@ describe('Titanium.UI.Shortcut', () => {
 			const shortcut = Ti.UI.createShortcut();
 			should(shortcut.items.length).be.aboveOrEqual(0);
 			const length = shortcut.items.length;
+			let expectedLength = length;
+			// If shortcut already exists, it will update data of shortcut.
+			// Length will increase only if shortcut do not exists.
+			if (shortcut.getById('test_shortcut') === undefined) {
+				expectedLength = length + 1;
+			}
 			shortcut.add(shortcutItem);
-			should(shortcut.items.length).eql(length + 1);
+			should(shortcut.items.length).eql(expectedLength);
 
 			shortcut.removeAll();
 			should(shortcut.items.length).eql(0);
@@ -108,11 +114,17 @@ describe('Titanium.UI.Shortcut', () => {
 			const shortcut = Ti.UI.createShortcut();
 			should(shortcut.items.length).be.aboveOrEqual(0);
 			const length = shortcut.items.length;
+			let expectedLength = length;
+			// If shortcut already exists, it will update data of shortcut.
+			// Length will increase only if shortcut do not exists.
+			if (shortcut.getById('test_shortcut') === undefined) {
+				expectedLength = length + 1;
+			}
 			shortcut.add(shortcutItem);
-			should(shortcut.items.length).eql(length + 1);
+			should(shortcut.items.length).eql(expectedLength);
 
 			shortcut.remove(shortcutItem);
-			should(shortcut.items.length).eql(length);
+			should(shortcut.items.length).eql(expectedLength - 1);
 		});
 		// TODO: Test removing multiple items
 		// TODO: Test removing item never added in first place
@@ -136,8 +148,14 @@ describe('Titanium.UI.Shortcut', () => {
 			const shortcut = Ti.UI.createShortcut();
 			should(shortcut.items.length).be.aboveOrEqual(0);
 			const length = shortcut.items.length;
+			let expectedLength = length;
+			// If shortcut already exists, it will update data of shortcut.
+			// Length will increase only if shortcut do not exists.
+			if (shortcut.getById('test_shortcut') === undefined) {
+				expectedLength = length + 1;
+			}
 			shortcut.add(shortcutItem);
-			should(shortcut.items.length).eql(length + 1);
+			should(shortcut.items.length).eql(expectedLength);
 		});
 
 		// TODO: Test adding multiple items
