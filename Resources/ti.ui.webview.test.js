@@ -306,6 +306,8 @@ describe('Titanium.UI.WebView', function () {
 	});
 
 	it.windowsBroken('userAgent', function (finish) {
+		this.slow(10000);
+		this.timeout(60000);
 		const webView = Ti.UI.createWebView({
 			userAgent: 'TEST AGENT',
 			ignoreSslError: true // Older Android complains about the cert at this site!
@@ -325,7 +327,7 @@ describe('Titanium.UI.WebView', function () {
 				Ti.API.warn('could not obtain userAgent, retrying...');
 				setTimeout(function () {
 					webView.url = url;
-				}, 1000);
+				}, 100);
 			} else {
 				return finish(new Error('invalid userAgent'));
 			}
